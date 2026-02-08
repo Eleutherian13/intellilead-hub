@@ -1,39 +1,63 @@
-# Welcome to your Lovable project
+# IITR Productathon - Lead Management Application
 
-## Project info
+## Project Structure
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+This project is organized as a monorepo with separate frontend and backend:
 
-## How can I edit this code?
+```
+IITR-productathon/
+├── client/          # Frontend React application
+│   ├── src/         # React components, pages, and utilities
+│   ├── public/      # Static assets
+│   └── package.json # Frontend dependencies
+├── server/          # Backend Node.js/Express server
+│   ├── src/         # Server source code
+│   └── package.json # Backend dependencies
+└── package.json     # Root package.json for managing both
+```
 
-There are several ways of editing your application.
+## Getting Started
 
-**Use Lovable**
+### Prerequisites
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
 
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
+### Installation
 
 ```sh
-# Step 1: Clone the repository using the project's Git URL.
+# Step 1: Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Step 2: Navigate to the project directory
+cd IITR-productathon
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Step 3: Install dependencies for both client and server
+npm run install:all
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Or install separately:
+# npm run install:client
+# npm run install:server
+```
+
+### Development
+
+```sh
+# Run both client and server concurrently
 npm run dev
+
+# Or run separately:
+# npm run dev:client  # Start frontend dev server
+# npm run dev:server  # Start backend dev server
+```
+
+### Building for Production
+
+```sh
+# Build the client
+npm run build:client
+
+# Start the production server
+npm start
 ```
 
 **Edit a file directly in GitHub**

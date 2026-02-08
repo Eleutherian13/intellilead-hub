@@ -1,0 +1,361 @@
+﻿import React, { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
+import { notificationsApi } from "@/lib/api";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Bell,
+  Target,
+  TrendingUp,
+  UserPlus,
+  Clock,
+  CheckCheck,
+  Trash2,
+  Filter,
+  ExternalLink,
+  RefreshCw,
+  Users,
+  Loader2,
+} from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { cn } from "@/lib/utils";
+
+const Notifications = () => {
+  const [filter, setFilter] = useState("all");
+  const [selectedIds, setSelectedIds] = useState([]);
+  const queryClient = useQueryClient();
+  const navigate = useNavigate();
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["notifications"],
+    queryFn: () => notificationsApi.getAll(),
+    refetchInterval: 30000,
+  });
+
+  const notifications = data?.notifications || data || [];
+
+  const markReadMutation = useMutation({
+    mutationFn: (id) => notificationsApi.markRead(id),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+  });
+
+  const markAllReadMutation = useMutation({
+    mutationFn: () => notificationsApi.markAllRead(),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+  });
+
+  const deleteMutation = useMutation({
+    mutationFn: (id) => notificationsApi.delete(id),
+    onSuccess: () =>
+      queryClient.invalidateQueries({ queryKey: ["notifications"] }),
+  });
+
+  const getNotificationIcon = (type) => {
+    switch (type) {
+      case "new_lead":
+        return TrendingUp;
+      case "status_change":
+        return RefreshCw;
+      case "conversion":
+        return Target;
+      case "assignment":
+        return Users;
+      case "reminder":
+        return Bell;
+      default:
+        return Bell;
+    }
+  };
+
+  const getNotificationColor = (type) => {
+    switch (type) {
+      case "new_lead":
+        return "bg-primary/20 text-primary";
+      case "status_change":
+        return "bg-warning/20 text-warning";
+      case "conversion":
+        return "bg-success/20 text-success";
+      case "assignment":
+        return "bg-info/20 text-info";
+      case "reminder":
+        return "bg-destructive/20 text-destructive";
+      default:
+        return "bg-muted text-muted-foreground";
+    }
+  };
+
+  const formatTimeAgo = (dateString) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMinutes = Math.floor(
+      (now.getTime() - date.getTime()) / (1000 * 60),
+    );
+
+    if (diffInMinutes < 1) return "Just now";
+    if (diffInMinutes < 60) return `${diffInMinutes}m ago`;
+    const diffInHours = Math.floor(diffInMinutes / 60);
+    if (diffInHours < 24) return `${diffInHours}h ago`;
+    const diffInDays = Math.floor(diffInHours / 24);
+    return `${diffInDays}d ago`;
+  };
+
+  const filteredNotifications = Array.isArray(notifications)
+    ? notifications.filter((notification) => {
+        if (filter === "all") return true;
+        if (filter === "unread") return !notification.read;
+        return notification.type === filter;
+      })
+    : [];
+
+  const unreadCount = Array.isArray(notifications)
+    ? notifications.filter((n) => !n.read).length
+    : 0;
+
+  const markAsRead = (id) => {
+    markReadMutation.mutate(id);
+  };
+
+  const markAllAsRead = () => {
+    markAllReadMutation.mutate();
+  };
+
+  const deleteSelected = () => {
+    selectedIds.forEach((id) => deleteMutation.mutate(id));
+    setSelectedIds([]);
+  };
+
+  const toggleSelect = (id) => {
+    setSelectedIds((prev) =>
+      prev.includes(id) ? prev.filter((i) => i !== id) : [...prev, id],
+    );
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      {/* Page Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold text-foreground">Notifications</h1>
+          <p className="text-muted-foreground">
+            {unreadCount} unread notifications
+          </p>
+        </div>
+        <div className="flex items-center gap-2">
+          {selectedIds.length > 0 && (
+            <Button variant="outline" size="sm" onClick={deleteSelected}>
+              <Trash2 className="h-4 w-4 mr-2" />
+              Delete ({selectedIds.length})
+            </Button>
+          )}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={markAllAsRead}
+            disabled={markAllReadMutation.isPending}
+          >
+            <CheckCheck className="h-4 w-4 mr-2" />
+            Mark All Read
+          </Button>
+        </div>
+      </div>
+
+      {/* Filters */}
+      <div className="flex flex-wrap items-center gap-3 p-4 rounded-xl border border-border bg-card">
+        <Filter className="h-4 w-4 text-muted-foreground" />
+        <Select value={filter} onValueChange={setFilter}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Filter" />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">All Notifications</SelectItem>
+            <SelectItem value="unread">Unread Only</SelectItem>
+            <SelectItem value="new_lead">New Leads</SelectItem>
+            <SelectItem value="conversion">Conversions</SelectItem>
+            <SelectItem value="status_change">Status Changes</SelectItem>
+            <SelectItem value="assignment">Assignments</SelectItem>
+            <SelectItem value="reminder">Reminders</SelectItem>
+          </SelectContent>
+        </Select>
+
+        {/* Quick filter badges */}
+        <div className="flex flex-wrap gap-2">
+          {[
+            {
+              value: "new_lead",
+              label: "Leads",
+              count: notifications.filter((n) => n.type === "new_lead").length,
+            },
+            {
+              value: "conversion",
+              label: "Conversions",
+              count: notifications.filter((n) => n.type === "conversion")
+                .length,
+            },
+            {
+              value: "reminder",
+              label: "Reminders",
+              count: notifications.filter((n) => n.type === "reminder").length,
+            },
+          ].map((quickFilter) => (
+            <Badge
+              key={quickFilter.value}
+              variant={filter === quickFilter.value ? "default" : "outline"}
+              className="cursor-pointer"
+              onClick={() =>
+                setFilter(
+                  quickFilter.value === filter ? "all" : quickFilter.value,
+                )
+              }
+            >
+              {quickFilter.label} ({quickFilter.count})
+            </Badge>
+          ))}
+        </div>
+      </div>
+
+      {/* Notifications List */}
+      <div className="space-y-3">
+        <AnimatePresence>
+          {filteredNotifications.map((notification, idx) => {
+            const Icon = getNotificationIcon(notification.type);
+            const nId = notification._id || notification.id;
+
+            return (
+              <motion.div
+                key={nId}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ delay: idx * 0.03 }}
+                className={cn(
+                  "relative flex items-start gap-4 p-4 rounded-xl border",
+                  "transition-all duration-200 hover:bg-secondary/30 group",
+                  notification.read
+                    ? "bg-card border-border/50"
+                    : "bg-secondary/20 border-primary/30",
+                )}
+                onClick={() => !notification.read && markAsRead(nId)}
+              >
+                {/* Checkbox */}
+                <Checkbox
+                  checked={selectedIds.includes(nId)}
+                  onCheckedChange={() => toggleSelect(nId)}
+                  onClick={(e) => e.stopPropagation()}
+                  className="mt-1"
+                />
+
+                {/* Unread indicator */}
+                {!notification.read && (
+                  <div className="absolute left-0 top-1/2 -translate-y-1/2 w-1 h-8 rounded-r-full bg-primary" />
+                )}
+
+                {/* Icon */}
+                <div
+                  className={cn(
+                    "flex h-10 w-10 shrink-0 items-center justify-center rounded-lg",
+                    getNotificationColor(notification.type),
+                  )}
+                >
+                  <Icon className="h-5 w-5" />
+                </div>
+
+                {/* Content */}
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <h3
+                        className={cn(
+                          "font-medium text-foreground",
+                          !notification.read && "font-semibold",
+                        )}
+                      >
+                        {notification.title}
+                      </h3>
+                      <p className="text-sm text-muted-foreground mt-0.5">
+                        {notification.message}
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-2 shrink-0">
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Clock className="h-3 w-3" />
+                        {formatTimeAgo(notification.createdAt)}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Action button */}
+                  {(notification.leadId || notification.lead) && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="mt-2 h-8 text-primary hover:text-primary opacity-0 group-hover:opacity-100 transition-opacity"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        navigate(
+                          `/leads?id=${notification.leadId || notification.lead}`,
+                        );
+                      }}
+                    >
+                      View Lead
+                      <ExternalLink className="h-3 w-3 ml-1" />
+                    </Button>
+                  )}
+                </div>
+              </motion.div>
+            );
+          })}
+        </AnimatePresence>
+
+        {filteredNotifications.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex flex-col items-center justify-center py-16 text-center"
+          >
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-secondary mb-4">
+              <Bell className="h-10 w-10 text-muted-foreground" />
+            </div>
+            <h3 className="text-lg font-semibold text-foreground mb-2">
+              No notifications
+            </h3>
+            <p className="text-muted-foreground max-w-md">
+              {filter === "unread"
+                ? "You're all caught up! No unread notifications."
+                : "No notifications match your current filter."}
+            </p>
+            {filter !== "all" && (
+              <Button
+                variant="outline"
+                className="mt-4"
+                onClick={() => setFilter("all")}
+              >
+                Clear Filter
+              </Button>
+            )}
+          </motion.div>
+        )}
+      </div>
+    </div>
+  );
+};
+
+export default Notifications;

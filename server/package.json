@@ -1,0 +1,35 @@
+{
+  "name": "lead-intel-server",
+  "version": "1.0.0",
+  "description": "Backend server for Lead Intel - B2B Intelligence Platform (HPCL DS)",
+  "main": "src/index.js",
+  "type": "module",
+  "scripts": {
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
+    "seed": "node src/utils/seedData.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "mongoose": "^7.6.3",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "axios": "^1.6.2",
+    "cheerio": "^1.0.0-rc.12",
+    "node-cron": "^3.0.3",
+    "twilio": "^4.19.0",
+    "nodemailer": "^6.9.7",
+    "socket.io": "^4.7.2",
+    "rss-parser": "^3.13.0",
+    "natural": "^6.10.4",
+    "uuid": "^9.0.0",
+    "morgan": "^1.10.0",
+    "helmet": "^7.1.0",
+    "express-rate-limit": "^7.1.4"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  }
+}
