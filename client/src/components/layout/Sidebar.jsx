@@ -1,7 +1,6 @@
 ﻿import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/contexts/AuthContext";
 import { notificationsApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import {
@@ -38,7 +37,6 @@ const navItems = [
 
 export function Sidebar({ collapsed = false, onToggle }) {
   const location = useLocation();
-  const { user } = useAuth();
 
   const { data: notifData } = useQuery({
     queryKey: ["notifications-sidebar"],
@@ -205,12 +203,10 @@ export function Sidebar({ collapsed = false, onToggle }) {
                 className="flex-1 min-w-0"
               >
                 <p className="font-medium text-sidebar-foreground truncate">
-                  {user?.name || "Sales Team"}
+                  Lead Intel
                 </p>
                 <p className="text-xs text-sidebar-foreground/60">
-                  {user?.territory
-                    ? `${user.territory.charAt(0).toUpperCase() + user.territory.slice(1)} Region`
-                    : user?.role || "Agent"}
+                  B2B Intelligence
                 </p>
               </motion.div>
             )}

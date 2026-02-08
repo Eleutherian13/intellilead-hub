@@ -65,8 +65,8 @@ const productSignals = {
   },
   LDO: {
     primary: ["light diesel oil", "ldo", "industrial diesel"],
-    secondary: ["burner fuel", "industrial heating", "furnace"],
-    industries: ["manufacturing", "textiles", "ceramics"],
+    secondary: ["burner fuel", "industrial heating", "furnace", "boiler", "genset", "captive power", "dg set"],
+    industries: ["manufacturing", "textiles", "ceramics", "power"],
     baseConfidence: 65,
   },
   FO: {
@@ -77,6 +77,9 @@ const productSignals = {
       "thermal energy",
       "steam generation",
       "kiln",
+      "captive power plant",
+      "thermic fluid",
+      "process heat",
     ],
     industries: [
       "manufacturing",
@@ -97,9 +100,15 @@ const productSignals = {
   },
   SKO: {
     primary: ["kerosene", "sko", "superior kerosene"],
-    secondary: ["lighting fuel", "cooking fuel", "pds kerosene"],
+    secondary: ["lighting fuel", "cooking fuel", "pds kerosene", "rural supply"],
     industries: ["government supply", "rural distribution"],
     baseConfidence: 55,
+  },
+  SKO_NonPDS: {
+    primary: ["industrial kerosene", "non-pds kerosene", "sko non-pds", "commercial kerosene"],
+    secondary: ["cleaning solvent", "aviation turbine", "industrial cleaning", "degreasing kerosene"],
+    industries: ["manufacturing", "aviation", "cleaning", "chemicals"],
+    baseConfidence: 60,
   },
   Hexane: {
     primary: ["hexane", "n-hexane", "food grade hexane"],
@@ -129,9 +138,9 @@ const productSignals = {
     baseConfidence: 65,
   },
   MTO: {
-    primary: ["mto", "mineral turpentine", "turpentine oil", "white spirit"],
-    secondary: ["paint solvent", "thinner", "cleaning solvent", "degreasing"],
-    industries: ["paint", "coatings", "cleaning", "manufacturing"],
+    primary: ["mto", "mineral turpentine", "turpentine oil", "white spirit", "mto 2445"],
+    secondary: ["paint solvent", "thinner", "cleaning solvent", "degreasing", "steel wash oil"],
+    industries: ["paint", "coatings", "cleaning", "manufacturing", "steel"],
     baseConfidence: 65,
   },
   Bitumen: {
@@ -143,6 +152,7 @@ const productSignals = {
       "vg-40",
       "crumb rubber modified bitumen",
       "crmb",
+      "pmb",
     ],
     secondary: [
       "road construction",
@@ -152,6 +162,9 @@ const productSignals = {
       "paving",
       "waterproofing",
       "roofing",
+      "road project",
+      "flyover",
+      "bridge deck",
     ],
     industries: ["construction", "infrastructure", "roads", "real estate"],
     baseConfidence: 80,
@@ -187,6 +200,12 @@ const productSignals = {
     secondary: ["plastic", "polymer", "petrochemical", "packaging"],
     industries: ["petrochemicals", "plastics", "packaging", "textiles"],
     baseConfidence: 65,
+  },
+  JBO: {
+    primary: ["jute batching oil", "jbo", "jute batch oil", "batching oil"],
+    secondary: ["jute mill", "jute processing", "jute fiber", "jute industry", "raw jute", "jute spinning"],
+    industries: ["jute", "textiles", "agriculture", "packaging"],
+    baseConfidence: 70,
   },
 };
 

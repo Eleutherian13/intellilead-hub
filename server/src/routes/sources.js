@@ -1,13 +1,12 @@
 import express from "express";
 import Source from "../models/Source.js";
 import Activity from "../models/Activity.js";
-import { protect, authorize } from "../middleware/auth.js";
 import { crawlSource } from "../services/scraper.js";
 
 const router = express.Router();
 
 // GET /api/sources
-router.get("/", protect, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const { status, type, sort = "-createdAt" } = req.query;
     const query = {};
@@ -22,7 +21,7 @@ router.get("/", protect, async (req, res) => {
 });
 
 // GET /api/sources/:id
-router.get("/:id", protect, async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const source = await Source.findById(req.params.id);
     if (!source) return res.status(404).json({ message: "Source not found" });
@@ -33,11 +32,10 @@ router.get("/:id", protect, async (req, res) => {
 });
 
 // POST /api/sources
-router.post("/", protect, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
-    const source = await Source.create({ ...req.body, addedBy: req.user._id });
+    const source = await Source.create({ ...req.body });
     await Activity.create({
-      user: req.user._id,
       type: "source_added",
       title: `Source added: ${source.name}`,
       source: source._id,
@@ -49,7 +47,7 @@ router.post("/", protect, async (req, res) => {
 });
 
 // PUT /api/sources/:id
-router.put("/:id", protect, async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const source = await Source.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -63,7 +61,7 @@ router.put("/:id", protect, async (req, res) => {
 });
 
 // POST /api/sources/:id/crawl — trigger manual crawl
-router.post("/:id/crawl", protect, async (req, res) => {
+router.post("/:id/crawl", async (req, res) => {
   try {
     const source = await Source.findById(req.params.id);
     if (!source) return res.status(404).json({ message: "Source not found" });
@@ -71,7 +69,6 @@ router.post("/:id/crawl", protect, async (req, res) => {
     const result = await crawlSource(source);
 
     await Activity.create({
-      user: req.user._id,
       type: "source_crawled",
       title: `Manual crawl: ${source.name}`,
       description: `Found ${result.leadsCreated} new leads`,
@@ -89,7 +86,7 @@ router.post("/:id/crawl", protect, async (req, res) => {
 });
 
 // DELETE /api/sources/:id
-router.delete("/:id", protect, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const source = await Source.findByIdAndDelete(req.params.id);
     if (!source) return res.status(404).json({ message: "Source not found" });

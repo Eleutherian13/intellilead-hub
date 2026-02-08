@@ -1,13 +1,12 @@
 ﻿import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import { useAuth } from "@/contexts/AuthContext";
 import { notificationsApi } from "@/lib/api";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
-import { Bell, Search, User, Settings, LogOut, Menu } from "lucide-react";
+import { Bell, Search, User, Settings, Menu } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,7 +18,6 @@ import {
 
 export function Header({ title, subtitle, onMenuToggle }) {
   const [searchQuery, setSearchQuery] = React.useState("");
-  const { user, logout } = useAuth();
   const navigate = useNavigate();
 
   const { data: notifData } = useQuery({
@@ -36,14 +34,7 @@ export function Header({ title, subtitle, onMenuToggle }) {
   const unreadCount = notifications.filter((n) => !n.read).length;
   const recentNotifs = notifications.slice(0, 3);
 
-  const initials = user?.name
-    ? user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : "U";
+  const initials = "LI";
 
   const formatTimeAgo = (dateString) => {
     const diff = Math.floor(
@@ -55,9 +46,8 @@ export function Header({ title, subtitle, onMenuToggle }) {
     return `${Math.floor(diff / 1440)}d ago`;
   };
 
-  const handleLogout = () => {
-    logout();
-    navigate("/login");
+  const handleSearch = (e) => {
+    setSearchQuery(e.target.value);
   };
 
   return (
@@ -177,9 +167,9 @@ export function Header({ title, subtitle, onMenuToggle }) {
           <DropdownMenuContent align="end" className="w-56">
             <DropdownMenuLabel>
               <div>
-                <p className="font-medium">{user?.name || "User"}</p>
+                <p className="font-medium">Lead Intel</p>
                 <p className="text-xs text-muted-foreground">
-                  {user?.email || ""}
+                  B2B Intelligence Platform
                 </p>
               </div>
             </DropdownMenuLabel>
@@ -191,14 +181,6 @@ export function Header({ title, subtitle, onMenuToggle }) {
             <DropdownMenuItem onClick={() => navigate("/settings")}>
               <Settings className="mr-2 h-4 w-4" />
               Settings
-            </DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem
-              className="text-destructive"
-              onClick={handleLogout}
-            >
-              <LogOut className="mr-2 h-4 w-4" />
-              Log out
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

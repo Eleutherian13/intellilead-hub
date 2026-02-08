@@ -20,13 +20,18 @@ const userSchema = new mongoose.Schema(
     territory: { type: String, default: "" },
     phone: { type: String, default: "" },
     whatsappNumber: { type: String, default: "" },
+    whatsappOptIn: { type: Boolean, default: false },
     avatar: { type: String, default: "" },
     isActive: { type: Boolean, default: true },
     notificationPreferences: {
       email: { type: Boolean, default: true },
       whatsapp: { type: Boolean, default: true },
       push: { type: Boolean, default: true },
+      sms: { type: Boolean, default: false },
+      teams: { type: Boolean, default: false },
     },
+    pushSubscription: { type: mongoose.Schema.Types.Mixed, default: null },
+    teamsWebhookUrl: { type: String, default: "" },
   },
   { timestamps: true },
 );

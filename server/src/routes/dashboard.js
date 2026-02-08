@@ -3,12 +3,11 @@ import Lead from "../models/Lead.js";
 import Company from "../models/Company.js";
 import Source from "../models/Source.js";
 import Activity from "../models/Activity.js";
-import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
 // GET /api/dashboard — aggregated stats
-router.get("/", protect, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const totalLeads = await Lead.countDocuments();
     const activeLeads = await Lead.countDocuments({

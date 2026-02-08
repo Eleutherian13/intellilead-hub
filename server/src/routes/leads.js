@@ -3,12 +3,11 @@ import Lead from "../models/Lead.js";
 import Company from "../models/Company.js";
 import Activity from "../models/Activity.js";
 import Notification from "../models/Notification.js";
-import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
 // GET /api/leads — list all leads with filtering, sorting, pagination
-router.get("/", protect, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const {
       page = 1,
@@ -68,7 +67,7 @@ router.get("/", protect, async (req, res) => {
 });
 
 // GET /api/leads/:id — single lead (dossier)
-router.get("/:id", protect, async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const lead = await Lead.findById(req.params.id)
       .populate("company")
@@ -84,7 +83,7 @@ router.get("/:id", protect, async (req, res) => {
 });
 
 // POST /api/leads — create
-router.post("/", protect, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const lead = await Lead.create({
       ...req.body,
@@ -92,14 +91,12 @@ router.post("/", protect, async (req, res) => {
         {
           action: "created",
           description: "Lead created",
-          performedBy: req.user._id,
           timestamp: new Date(),
         },
       ],
     });
 
     await Activity.create({
-      user: req.user._id,
       type: "lead_created",
       title: `New lead: ${lead.title}`,
       description: `Lead created for ${lead.companyName}`,
@@ -118,7 +115,7 @@ router.post("/", protect, async (req, res) => {
 });
 
 // PUT /api/leads/:id — update
-router.put("/:id", protect, async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const lead = await Lead.findById(req.params.id);
     if (!lead) return res.status(404).json({ message: "Lead not found" });
@@ -136,7 +133,6 @@ router.put("/:id", protect, async (req, res) => {
       lead.timeline.push({
         action: "updated",
         description: changes.join(", "),
-        performedBy: req.user._id,
         timestamp: new Date(),
       });
     }
@@ -145,7 +141,6 @@ router.put("/:id", protect, async (req, res) => {
     await updated.populate("company", "name industry headquarters logo");
 
     await Activity.create({
-      user: req.user._id,
       type: "lead_updated",
       title: `Lead updated: ${lead.title}`,
       description: changes.join(", "),
@@ -159,7 +154,7 @@ router.put("/:id", protect, async (req, res) => {
 });
 
 // PUT /api/leads/:id/assign — assign to user
-router.put("/:id/assign", protect, async (req, res) => {
+router.put("/:id/assign", async (req, res) => {
   try {
     const { userId, territory } = req.body;
     const lead = await Lead.findById(req.params.id);
@@ -170,7 +165,6 @@ router.put("/:id/assign", protect, async (req, res) => {
     lead.timeline.push({
       action: "assigned",
       description: `Lead assigned to user`,
-      performedBy: req.user._id,
       timestamp: new Date(),
       metadata: { assignedTo: userId },
     });
@@ -190,7 +184,6 @@ router.put("/:id/assign", protect, async (req, res) => {
     });
 
     await Activity.create({
-      user: req.user._id,
       type: "lead_assigned",
       title: `Lead assigned: ${lead.title}`,
       lead: lead._id,
@@ -203,7 +196,7 @@ router.put("/:id/assign", protect, async (req, res) => {
 });
 
 // PUT /api/leads/:id/feedback — sales officer feedback
-router.put("/:id/feedback", protect, async (req, res) => {
+router.put("/:id/feedback", async (req, res) => {
   try {
     const { status, reason, notes, conversionValue } = req.body;
     const lead = await Lead.findById(req.params.id);
@@ -215,7 +208,6 @@ router.put("/:id/feedback", protect, async (req, res) => {
       notes: notes || "",
       conversionValue: conversionValue || 0,
       feedbackAt: new Date(),
-      feedbackBy: req.user._id,
     };
 
     // Update lead status based on feedback
@@ -226,7 +218,6 @@ router.put("/:id/feedback", protect, async (req, res) => {
     lead.timeline.push({
       action: "feedback",
       description: `Feedback: ${status} — ${reason || "No reason"}`,
-      performedBy: req.user._id,
       timestamp: new Date(),
       metadata: { feedbackStatus: status, reason, conversionValue },
     });
@@ -234,7 +225,6 @@ router.put("/:id/feedback", protect, async (req, res) => {
     const updated = await lead.save();
 
     await Activity.create({
-      user: req.user._id,
       type: "feedback_given",
       title: `Feedback on ${lead.title}: ${status}`,
       description: reason || "",
@@ -248,7 +238,7 @@ router.put("/:id/feedback", protect, async (req, res) => {
 });
 
 // DELETE /api/leads/:id
-router.delete("/:id", protect, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const lead = await Lead.findByIdAndDelete(req.params.id);
     if (!lead) return res.status(404).json({ message: "Lead not found" });

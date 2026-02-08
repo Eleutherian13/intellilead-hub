@@ -42,11 +42,13 @@ const config = {
     },
     { code: "Hexane", name: "Hexane", category: "Specialty" },
     { code: "Solvent1425", name: "Solvent 1425", category: "Specialty" },
-    { code: "MTO", name: "Mineral Turpentine Oil", category: "Specialty" },
+    { code: "MTO", name: "Mineral Turpentine Oil (MTO 2445)", category: "Specialty" },
     { code: "Bitumen", name: "Bitumen", category: "Heavy Ends" },
     { code: "MarineFuels", name: "Marine Fuels", category: "Specialty" },
     { code: "Sulphur", name: "Sulphur", category: "By-Products" },
     { code: "Propylene", name: "Propylene", category: "Petrochemicals" },
+    { code: "JBO", name: "Jute Batching Oil", category: "Specialty" },
+    { code: "SKO_NonPDS", name: "SKO (Non-PDS / Industrial)", category: "Middle Distillates" },
   ],
 };
 

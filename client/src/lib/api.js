@@ -1,16 +1,9 @@
 const API_BASE = "/api";
 
-// Get stored token
-function getToken() {
-  return localStorage.getItem("token");
-}
-
-// Generic fetch wrapper with auth
+// Generic fetch wrapper
 async function apiFetch(endpoint, options = {}) {
-  const token = getToken();
   const headers = {
     "Content-Type": "application/json",
-    ...(token && { Authorization: `Bearer ${token}` }),
     ...options.headers,
   };
 
@@ -19,40 +12,12 @@ async function apiFetch(endpoint, options = {}) {
     headers,
   });
 
-  if (res.status === 401) {
-    // Token expired / invalid
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    window.location.href = "/login";
-    throw new Error("Session expired");
-  }
-
   const data = await res.json();
   if (!res.ok) {
     throw new Error(data.message || "API request failed");
   }
   return data;
 }
-
-// ─── Auth ──────────────────────────────────────────────────
-export const authApi = {
-  login: (email, password) =>
-    apiFetch("/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
-    }),
-
-  register: (data) =>
-    apiFetch("/auth/register", { method: "POST", body: JSON.stringify(data) }),
-
-  getMe: () => apiFetch("/auth/me"),
-
-  updateProfile: (data) =>
-    apiFetch("/auth/profile", { method: "PUT", body: JSON.stringify(data) }),
-
-  updatePassword: (data) =>
-    apiFetch("/auth/password", { method: "PUT", body: JSON.stringify(data) }),
-};
 
 // ─── Dashboard ─────────────────────────────────────────────
 export const dashboardApi = {

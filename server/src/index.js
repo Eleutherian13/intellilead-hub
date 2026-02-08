@@ -12,7 +12,6 @@ import config from "./config/config.js";
 import errorHandler from "./middleware/errorHandler.js";
 
 // Route imports
-import authRoutes from "./routes/auth.js";
 import leadRoutes from "./routes/leads.js";
 import companyRoutes from "./routes/companies.js";
 import sourceRoutes from "./routes/sources.js";
@@ -72,8 +71,6 @@ app.get("/api", (req, res) => {
     message: "Lead Intel API is running",
     version: "1.0.0",
     endpoints: [
-      "POST /api/auth/register",
-      "POST /api/auth/login",
       "GET  /api/dashboard",
       "GET  /api/leads",
       "GET  /api/companies",
@@ -84,7 +81,6 @@ app.get("/api", (req, res) => {
   });
 });
 
-app.use("/api/auth", authRoutes);
 app.use("/api/leads", leadRoutes);
 app.use("/api/companies", companyRoutes);
 app.use("/api/sources", sourceRoutes);

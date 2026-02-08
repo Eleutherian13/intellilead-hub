@@ -1,7 +1,4 @@
 ﻿import React, { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
-import { useAuth } from "@/contexts/AuthContext";
-import { authApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -35,79 +32,27 @@ import {
   Key,
   Smartphone,
   Save,
-  RefreshCw,
   Link,
-  Loader2,
   CheckCircle2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 
 const Settings = () => {
-  const { user, updateProfile } = useAuth();
   const [profileMsg, setProfileMsg] = useState("");
-  const [passwordMsg, setPasswordMsg] = useState("");
 
   // Profile form state
-  const [firstName, setFirstName] = useState(user?.name?.split(" ")[0] || "");
-  const [lastName, setLastName] = useState(
-    user?.name?.split(" ").slice(1).join(" ") || "",
-  );
-  const [email, setEmail] = useState(user?.email || "");
-  const [phone, setPhone] = useState(user?.phone || "");
-  const [territory, setTerritory] = useState(user?.territory || "east");
-
-  // Password form state
-  const [currentPassword, setCurrentPassword] = useState("");
-  const [newPassword, setNewPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-
-  const profileMutation = useMutation({
-    mutationFn: (data) => updateProfile(data),
-    onSuccess: () => {
-      setProfileMsg("Profile updated successfully!");
-      setTimeout(() => setProfileMsg(""), 3000);
-    },
-    onError: (err) => setProfileMsg(err.message || "Failed to update profile"),
-  });
-
-  const passwordMutation = useMutation({
-    mutationFn: (data) => authApi.updatePassword(data),
-    onSuccess: () => {
-      setPasswordMsg("Password updated successfully!");
-      setCurrentPassword("");
-      setNewPassword("");
-      setConfirmPassword("");
-      setTimeout(() => setPasswordMsg(""), 3000);
-    },
-    onError: (err) =>
-      setPasswordMsg(err.message || "Failed to update password"),
-  });
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [territory, setTerritory] = useState("east");
 
   const handleSaveProfile = () => {
-    profileMutation.mutate({
-      name: `${firstName} ${lastName}`.trim(),
-      email,
-      phone,
-      territory,
-    });
+    setProfileMsg("Profile updated successfully!");
+    setTimeout(() => setProfileMsg(""), 3000);
   };
 
-  const handleChangePassword = () => {
-    if (newPassword !== confirmPassword) {
-      setPasswordMsg("Passwords do not match");
-      return;
-    }
-    passwordMutation.mutate({ currentPassword, newPassword });
-  };
-
-  const initials = user?.name
-    ? user.name
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
-    : "U";
+  const initials = "LI";
   return (
     <div className="space-y-6">
       {/* Page Header */}
@@ -206,7 +151,7 @@ const Settings = () => {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="role">Role</Label>
-                    <Select defaultValue={user?.role || "sales"} disabled>
+                    <Select defaultValue="sales" disabled>
                       <SelectTrigger>
                         <SelectValue placeholder="Select role" />
                       </SelectTrigger>
@@ -240,15 +185,8 @@ const Settings = () => {
                 )}
 
                 <div className="flex justify-end">
-                  <Button
-                    onClick={handleSaveProfile}
-                    disabled={profileMutation.isPending}
-                  >
-                    {profileMutation.isPending ? (
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    ) : (
-                      <Save className="h-4 w-4 mr-2" />
-                    )}
+                  <Button onClick={handleSaveProfile}>
+                    <Save className="h-4 w-4 mr-2" />
                     Save Changes
                   </Button>
                 </div>
@@ -500,61 +438,6 @@ const Settings = () => {
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-6">
-                <div className="space-y-4">
-                  <h3 className="font-medium text-foreground">
-                    Change Password
-                  </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="currentPassword">Current Password</Label>
-                      <Input
-                        id="currentPassword"
-                        type="password"
-                        value={currentPassword}
-                        onChange={(e) => setCurrentPassword(e.target.value)}
-                      />
-                    </div>
-                    <div />
-                    <div className="space-y-2">
-                      <Label htmlFor="newPassword">New Password</Label>
-                      <Input
-                        id="newPassword"
-                        type="password"
-                        value={newPassword}
-                        onChange={(e) => setNewPassword(e.target.value)}
-                      />
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="confirmPassword">
-                        Confirm New Password
-                      </Label>
-                      <Input
-                        id="confirmPassword"
-                        type="password"
-                        value={confirmPassword}
-                        onChange={(e) => setConfirmPassword(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  {passwordMsg && (
-                    <p className="text-sm text-success flex items-center gap-1">
-                      <CheckCircle2 className="h-4 w-4" /> {passwordMsg}
-                    </p>
-                  )}
-                  <Button
-                    variant="outline"
-                    onClick={handleChangePassword}
-                    disabled={passwordMutation.isPending}
-                  >
-                    {passwordMutation.isPending ? (
-                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                    ) : null}
-                    Update Password
-                  </Button>
-                </div>
-
-                <Separator />
-
                 <div className="space-y-4">
                   <h3 className="font-medium text-foreground">
                     Two-Factor Authentication

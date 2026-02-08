@@ -2,12 +2,11 @@ import express from "express";
 import Company from "../models/Company.js";
 import Lead from "../models/Lead.js";
 import Activity from "../models/Activity.js";
-import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
 // GET /api/companies
-router.get("/", protect, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const {
       page = 1,
@@ -53,7 +52,7 @@ router.get("/", protect, async (req, res) => {
 });
 
 // GET /api/companies/:id
-router.get("/:id", protect, async (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const company = await Company.findById(req.params.id);
     if (!company) return res.status(404).json({ message: "Company not found" });
@@ -70,11 +69,10 @@ router.get("/:id", protect, async (req, res) => {
 });
 
 // POST /api/companies
-router.post("/", protect, async (req, res) => {
+router.post("/", async (req, res) => {
   try {
     const company = await Company.create(req.body);
     await Activity.create({
-      user: req.user._id,
       type: "company_created",
       title: `Company added: ${company.name}`,
       company: company._id,
@@ -86,7 +84,7 @@ router.post("/", protect, async (req, res) => {
 });
 
 // PUT /api/companies/:id
-router.put("/:id", protect, async (req, res) => {
+router.put("/:id", async (req, res) => {
   try {
     const company = await Company.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
@@ -95,7 +93,6 @@ router.put("/:id", protect, async (req, res) => {
     if (!company) return res.status(404).json({ message: "Company not found" });
 
     await Activity.create({
-      user: req.user._id,
       type: "company_updated",
       title: `Company updated: ${company.name}`,
       company: company._id,
@@ -108,7 +105,7 @@ router.put("/:id", protect, async (req, res) => {
 });
 
 // DELETE /api/companies/:id
-router.delete("/:id", protect, async (req, res) => {
+router.delete("/:id", async (req, res) => {
   try {
     const company = await Company.findByIdAndDelete(req.params.id);
     if (!company) return res.status(404).json({ message: "Company not found" });

@@ -2,12 +2,11 @@ import express from "express";
 import Lead from "../models/Lead.js";
 import Company from "../models/Company.js";
 import Source from "../models/Source.js";
-import { protect } from "../middleware/auth.js";
 
 const router = express.Router();
 
 // GET /api/analytics — detailed analytics
-router.get("/", protect, async (req, res) => {
+router.get("/", async (req, res) => {
   try {
     const { period = "30d" } = req.query;
     let daysBack = 30;
