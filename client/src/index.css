@@ -2,11 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
-/* HPCL Lead Intelligence - Dark Enterprise Design System */
+/* HPCL Lead Intelligence - Light Enterprise Design System */
 
 @layer base {
   :root {
-    /* Dark mode as default - Enterprise Analytics Theme */
+    /* Light mode as default - Enterprise Analytics Theme */
+    --background: 210 40% 98%;
+    --foreground: 222 47% 11%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 222 47% 11%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 222 47% 11%;
+
+    /* Electric Blue Primary */
+    --primary: 217 91% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Muted Blue-Gray Secondary */
+    --secondary: 217 33% 92%;
+    --secondary-foreground: 222 47% 11%;
+
+    --muted: 217 33% 95%;
+    --muted-foreground: 215 20% 45%;
+
+    /* Cyan Accent */
+    --accent: 187 92% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    /* Status Colors */
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --success: 142 76% 45%;
+    --success-foreground: 0 0% 100%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 222 47% 11%;
+
+    --info: 199 89% 48%;
+    --info-foreground: 0 0% 100%;
+
+    /* UI Elements */
+    --border: 217 33% 85%;
+    --input: 217 33% 90%;
+    --ring: 217 91% 55%;
+    --radius: 0.75rem;
+
+    /* Lead Score Colors */
+    --score-high: 142 76% 45%;
+    --score-medium: 38 92% 50%;
+    --score-low: 0 84% 60%;
+
+    /* Glassmorphism */
+    --glass: 0 0% 100% / 0.8;
+    --glass-border: 217 33% 70% / 0.5;
+
+    /* Gradients */
+    --gradient-primary: linear-gradient(135deg, hsl(217, 91%, 55%), hsl(187, 92%, 45%));
+    --gradient-success: linear-gradient(135deg, hsl(142, 76%, 45%), hsl(172, 66%, 50%));
+    --gradient-warning: linear-gradient(135deg, hsl(38, 92%, 50%), hsl(25, 95%, 55%));
+    --gradient-danger: linear-gradient(135deg, hsl(0, 84%, 60%), hsl(340, 82%, 55%));
+    --gradient-dark: linear-gradient(180deg, hsl(217, 33%, 95%), hsl(210, 40%, 98%));
+    --gradient-card: linear-gradient(135deg, hsl(0, 0%, 100%), hsl(210, 40%, 98%));
+
+    /* Shadows */
+    --shadow-sm: 0 2px 8px hsl(222, 47%, 11% / 0.08);
+    --shadow-md: 0 4px 16px hsl(222, 47%, 11% / 0.12);
+    --shadow-lg: 0 8px 32px hsl(222, 47%, 11% / 0.16);
+    --shadow-glow: 0 0 40px hsl(217, 91%, 55% / 0.15);
+    --shadow-glow-accent: 0 0 30px hsl(187, 92%, 45% / 0.12);
+
+    /* Sidebar - Light variant */
+    --sidebar-background: 0 0% 100%;
+    --sidebar-foreground: 222 47% 11%;
+    --sidebar-primary: 217 91% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 217 33% 92%;
+    --sidebar-accent-foreground: 222 47% 11%;
+    --sidebar-border: 217 33% 85%;
+    --sidebar-ring: 217 91% 55%;
+  }
+
+  .dark {
+    /* Dark mode theme */
     --background: 222 47% 6%;
     --foreground: 210 40% 98%;
 
@@ -16,22 +96,18 @@
     --popover: 222 47% 10%;
     --popover-foreground: 210 40% 98%;
 
-    /* Electric Blue Primary */
     --primary: 217 91% 60%;
     --primary-foreground: 222 47% 6%;
 
-    /* Muted Blue-Gray Secondary */
     --secondary: 217 33% 17%;
     --secondary-foreground: 210 40% 98%;
 
     --muted: 217 33% 15%;
     --muted-foreground: 215 20% 55%;
 
-    /* Cyan Accent */
     --accent: 187 92% 50%;
     --accent-foreground: 222 47% 6%;
 
-    /* Status Colors */
     --destructive: 0 84% 60%;
     --destructive-foreground: 210 40% 98%;
 
@@ -44,22 +120,13 @@
     --info: 199 89% 48%;
     --info-foreground: 210 40% 98%;
 
-    /* UI Elements */
     --border: 217 33% 20%;
     --input: 217 33% 17%;
     --ring: 217 91% 60%;
-    --radius: 0.75rem;
 
-    /* Lead Score Colors */
-    --score-high: 142 76% 45%;
-    --score-medium: 38 92% 50%;
-    --score-low: 0 84% 60%;
-
-    /* Glassmorphism */
     --glass: 222 47% 10% / 0.8;
     --glass-border: 217 33% 30% / 0.5;
 
-    /* Gradients */
     --gradient-primary: linear-gradient(135deg, hsl(217, 91%, 60%), hsl(187, 92%, 50%));
     --gradient-success: linear-gradient(135deg, hsl(142, 76%, 45%), hsl(172, 66%, 50%));
     --gradient-warning: linear-gradient(135deg, hsl(38, 92%, 50%), hsl(25, 95%, 55%));
@@ -67,14 +134,12 @@
     --gradient-dark: linear-gradient(180deg, hsl(222, 47%, 8%), hsl(222, 47%, 4%));
     --gradient-card: linear-gradient(135deg, hsl(222, 47%, 10%), hsl(222, 47%, 6%));
 
-    /* Shadows */
     --shadow-sm: 0 2px 8px hsl(222, 47%, 4% / 0.4);
     --shadow-md: 0 4px 16px hsl(222, 47%, 4% / 0.5);
     --shadow-lg: 0 8px 32px hsl(222, 47%, 4% / 0.6);
     --shadow-glow: 0 0 40px hsl(217, 91%, 60% / 0.2);
     --shadow-glow-accent: 0 0 30px hsl(187, 92%, 50% / 0.15);
 
-    /* Sidebar - Dark variant */
     --sidebar-background: 222 47% 5%;
     --sidebar-foreground: 210 40% 90%;
     --sidebar-primary: 217 91% 60%;
@@ -85,27 +150,8 @@
     --sidebar-ring: 217 91% 60%;
   }
 
-  .dark {
-    /* Already dark by default */
-  }
-
   .light {
-    --background: 210 40% 98%;
-    --foreground: 222 47% 11%;
-    --card: 0 0% 100%;
-    --card-foreground: 222 47% 11%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 222 47% 11%;
-    --primary: 217 91% 55%;
-    --primary-foreground: 0 0% 100%;
-    --secondary: 217 33% 92%;
-    --secondary-foreground: 222 47% 11%;
-    --muted: 217 33% 95%;
-    --muted-foreground: 215 20% 45%;
-    --accent: 187 92% 45%;
-    --accent-foreground: 0 0% 100%;
-    --border: 217 33% 85%;
-    --input: 217 33% 90%;
+    /* Already light by default */
   }
 }
 
@@ -141,8 +187,9 @@
 @layer components {
   /* Glass Card Effect */
   .glass-card {
-    @apply backdrop-blur-xl border border-white/10;
+    @apply backdrop-blur-xl border;
     background: var(--glass);
+    border-color: var(--glass-border);
   }
 
   /* Gradient backgrounds */
